@@ -105,16 +105,14 @@ export function createTrelloApi(key, token) {
         }
       ),
 
-    moveCard: (cardId, destListId) =>
-      request(
-        `/cards/${cardId}`,
-        "PUT",
-        {},
-        {
-          idList: destListId,
-          pos: "bottom"
-        }
-      ),
+   
+moveCard: (cardId, destBoardId, destListId) =>
+  request(`/cards/${cardId}`, "PUT", {}, {
+    idBoard: destBoardId,
+    idList: destListId,
+    pos: "bottom",
+  }),
+
 
     moveList: (listId, destBoardId) =>
       request(

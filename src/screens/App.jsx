@@ -564,10 +564,11 @@ export default function App() {
         // Move cards one by one
         for (const card of cardsInList) {
           try {
-            await api.moveCard(
-              card.id,
-              destinationListId
-            );
+           await api.moveCard(
+  card.id,
+  destinationBoard.id,
+  targetListId
+);
 
             const mappedIds = (
               card.labels || []
