@@ -42,10 +42,14 @@ export function createTrelloApi(key, token) {
         : await response.json().catch(() => null);
 
     if (!response.ok) {
-      const message =
-        payload?.message ||
-        payload?.error ||
-        `Trello API error (${response.status})`;
+  const message =
+  payload?.message ||
+  payload?.error ||
+  `Trello API error (${response.status})`;
+
+throw new Error(
+  `${message} | ${method} ${path}`
+);
 
       throw new Error(message);
     }

@@ -280,9 +280,9 @@ export default function App() {
 
           setBoards(openBoards);
 
-          const context = await trello
-            .getContext()
-            .catch(() => ({}));
+       
+const context = await trello.getContext();
+
 
           const current = openBoards.find(
             (b) => b.id === context?.board
@@ -564,11 +564,13 @@ export default function App() {
         // Move cards one by one
         for (const card of cardsInList) {
           try {
-           await api.moveCard(
+           
+await api.moveCard(
   card.id,
-  destinationBoard.id,
-  targetListId
+  dest.id,
+  destinationListId
 );
+
 
             const mappedIds = (
               card.labels || []
