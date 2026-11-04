@@ -1,15 +1,15 @@
 
 /* global TrelloPowerUp */
 
-const origin = window.location.origin;
+const APP_URL = 'https://boardmerge-three.vercel.app';
 
 const ICON = {
-  dark: `${origin}/public-icon.svg`,
-  light: `${origin}/public-icon.svg`
+  dark: `${APP_URL}/public-icon.svg`,
+  light: `${APP_URL}/public-icon.svg`
 };
 
 TrelloPowerUp.initialize({
-  'board-buttons': function () {
+  'board-buttons': function (t) {
     return [
       {
         icon: ICON,
@@ -17,7 +17,7 @@ TrelloPowerUp.initialize({
         callback: function (t) {
           return t.popup({
             title: 'Board Merge',
-            url: './index.html',
+            url: `${APP_URL}/index.html`,
             height: 700
           });
         }
