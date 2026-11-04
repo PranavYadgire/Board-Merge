@@ -1,27 +1,30 @@
 
 /* global TrelloPowerUp */
 
-const APP_URL = 'https://boardmerge-three.vercel.app';
+const APP_URL = window.location.origin;
 
-const ICON = {
-  dark: `${APP_URL}/public-icon.svg`,
-  light: `${APP_URL}/public-icon.svg`
-};
+const ICON_URL = `${APP_URL}/public-icon.svg`;
 
 TrelloPowerUp.initialize({
-  'board-buttons': function (t) {
+  "board-buttons": function (t) {
     return [
       {
-        icon: ICON,
-        text: 'Board Merge',
+        text: "Board Merge",
+
+        icon: {
+          dark: ICON_URL,
+          light: ICON_URL,
+        },
+
         callback: function (t) {
-          return t.popup({
-            title: 'Board Merge',
+          return t.modal({
+            title: "Board Merge",
             url: `${APP_URL}/index.html`,
-            height: 700
+            fullscreen: true,
+            accentColor: "#0C66E4",
           });
-        }
-      }
+        },
+      },
     ];
-  }
+  },
 });
