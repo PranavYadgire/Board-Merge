@@ -1037,3 +1037,214 @@ button:disabled {
     flex: 1;
   }
 }
+
+/* FIGMA-STYLE MERGE PROGRESS */
+
+.merge-progress-card {
+  background: #ffffff;
+  border: 1px solid #dfe1e6;
+  border-radius: 12px;
+  padding: 28px;
+  margin-top: 24px;
+  color: #172b4d;
+}
+
+.merge-progress-top {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid #dfe1e6;
+}
+
+.progress-ring {
+  width: 160px;
+  height: 160px;
+  min-width: 160px;
+  border-radius: 50%;
+  background: conic-gradient(
+    #0c66e4 var(--progress),
+    #dfe1e6 var(--progress)
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progress-ring-inner {
+  width: 132px;
+  height: 132px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progress-ring-inner strong {
+  font-size: 30px;
+  font-weight: 700;
+  color: #172b4d;
+}
+
+.merge-progress-info h2 {
+  font-size: 20px;
+  margin: 0 0 10px;
+  font-weight: 700;
+}
+
+.merge-progress-info p {
+  color: #626f86;
+  font-size: 14px;
+  margin: 0 0 16px;
+}
+
+.merge-live-status {
+  color: #0c66e4;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background: #0c66e4;
+  border-radius: 50%;
+}
+
+.merge-stage-list {
+  padding: 24px 0;
+}
+
+.merge-stage {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  min-height: 64px;
+  position: relative;
+}
+
+.merge-stage:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  width: 2px;
+  height: 42px;
+  left: 13px;
+  top: 28px;
+  background: #dfe1e6;
+}
+
+.stage-indicator {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  border: 2px solid #c1c7d0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: #ffffff;
+  background: #ffffff;
+  z-index: 1;
+}
+
+.merge-stage.completed .stage-indicator {
+  background: #00875a;
+  border-color: #00875a;
+}
+
+.merge-stage.active .stage-indicator {
+  border-color: #0c66e4;
+  color: #0c66e4;
+}
+
+.stage-content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.stage-content strong {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.stage-content small {
+  color: #626f86;
+  font-size: 12px;
+}
+
+.merge-stage.active .stage-content strong {
+  color: #0c66e4;
+}
+
+.merge-activity {
+  background: #f7f8f9;
+  border: 1px solid #dfe1e6;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.merge-activity h3 {
+  font-size: 14px;
+  margin: 0 0 14px;
+}
+
+.activity-row {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  padding: 5px 0;
+  color: #44546f;
+}
+
+.activity-row time {
+  min-width: 55px;
+  color: #626f86;
+}
+
+.activity-empty {
+  font-size: 12px;
+  color: #626f86;
+}
+
+.merge-info-banner {
+  margin-top: 20px;
+  background: #e9f2ff;
+  border: 1px solid #b3d4ff;
+  border-radius: 6px;
+  padding: 12px 16px;
+  color: #0747a6;
+  font-size: 12px;
+}
+
+@media (max-width: 650px) {
+  .merge-progress-card {
+    padding: 16px;
+  }
+
+  .merge-progress-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .progress-ring {
+    width: 130px;
+    height: 130px;
+    min-width: 130px;
+  }
+
+  .progress-ring-inner {
+    width: 108px;
+    height: 108px;
+  }
+
+  .progress-ring-inner strong {
+    font-size: 24px;
+  }
+}

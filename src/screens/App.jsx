@@ -225,6 +225,16 @@ export default function App() {
     total: 0,
     label: "Waiting to start"
   });
+  const [activity, setActivity] = useState([]);
+
+const [mergeStages, setMergeStages] = useState([
+  { title: "Preparing boards", status: "pending" },
+  { title: "Moving lists", status: "pending" },
+  { title: "Moving cards", status: "pending" },
+  { title: "Mapping labels", status: "pending" },
+  { title: "Moving attachments", status: "pending" },
+  { title: "Finalizing merge", status: "pending" }
+]);
 
   const [result, setResult] = useState({
     status: "success",
@@ -457,6 +467,33 @@ const context = await trello.getContext();
     }
   }
 
+function updateMergeProgress(nextProgress, stageIndex = 2) {
+  setProgress(nextProgress);
+
+  setMergeStages((previous) =>
+    previous.map((stage, index) => ({
+      ...stage,
+      status:
+        index < stageIndex
+          ? "completed"
+          : index === stageIndex
+          ? "active"
+          : "pending"
+    }))
+  );
+
+  setActivity((previous) => [
+    {
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+      }),
+      message: nextProgress.label
+    },
+    ...previous
+  ].slice(0, 8));
+}
+
   // REAL MERGE OPERATION
   async function executeMerge() {
     setStep(3);
@@ -473,11 +510,14 @@ const context = await trello.getContext();
 
     let done = 0;
 
-    setProgress({
-      done: 0,
-      total,
-      label: "Preparing destination labels"
-    });
+  updateMergeProgress(
+  {
+    done: 0,
+    total,
+    label: "Preparing destination labels"
+  },
+  0
+);
 
     try {
       // Map source labels to destination labels
@@ -545,11 +585,14 @@ const context = await trello.getContext();
 
             done++;
 
-            setProgress({
-              done,
-              total,
-              label: `Skipped list ${list.name}`
-            });
+           updateMergeProgress(
+  {
+    done,
+    total,
+    label: `Skipped list ${list.name}`
+  },
+  1
+);
 
             continue;
           }
@@ -605,11 +648,16 @@ await api.moveCard(
             movedCards++;
             done++;
 
-            setProgress({
-              done,
-              total,
-              label: `Moving card: ${card.name}`
-            });
+           
+updateMergeProgress(
+  {
+    done,
+    total,
+    label: `Moving card: ${card.name}`
+  },
+  2
+);
+
           } catch (e) {
             errors.push({
               item: `Card: ${card.name}`,
@@ -618,11 +666,14 @@ await api.moveCard(
 
             done++;
 
-            setProgress({
-              done,
-              total,
-              label: `Failed card: ${card.name}`
-            });
+           updateMergeProgress(
+  {
+    done,
+    total,
+    label: `Failed card: ${card.name}`
+  },
+  2
+);
 
             listFailed = true;
           }
@@ -636,11 +687,14 @@ await api.moveCard(
             movedLists++;
             done++;
 
-            setProgress({
-              done,
-              total,
-              label: `Completed list: ${list.name}`
-            });
+           updateMergeProgress(
+  {
+    done,
+    total,
+    label: `Completed list: ${list.name}`
+  },
+  2
+);
           } catch (e) {
             errors.push({
               item: `List: ${list.name}`,
@@ -1250,40 +1304,108 @@ await api.moveCard(
                   sub="Moving selected cards to their destination lists. Please keep this window open."
                 />
 
-                <div className="progress-panel">
-                  <div className="ring">
-                    <b>
-                      {progress.total
-                        ? Math.min(
-                            100,
-                            Math.round(
-                              (progress.done /
-                                progress.total) *
-                                100
-                            )
-                          )
-                        : 0}
-                      %
-                    </b>
-                  </div>
+                
+<div className="merge-progress-card">
+  <div className="merge-progress-top">
+    <div
+      className="progress-ring"
+      style={{
+        "--progress": `${
+          progress.total
+            ? Math.min(
+                100,
+                Math.round(
+                  (progress.done / progress.total) * 100
+                )
+              )
+            : 0
+        }%`
+      }}
+    >
+      <div className="progress-ring-inner">
+        <strong>
+          {progress.total
+            ? Math.min(
+                100,
+                Math.round(
+                  (progress.done / progress.total) * 100
+                )
+              )
+            : 0}
+          %
+        </strong>
+      </div>
+    </div>
 
-                  <div className="progress-copy">
-                    <b>{progress.label}</b>
+    <div className="merge-progress-info">
+      <h2>{progress.label}</h2>
 
-                    <small>
-                      {progress.done} of{" "}
-                      {progress.total} tasks completed
-                    </small>
-                  </div>
+      <p>
+        {progress.done} of {progress.total} tasks completed
+      </p>
 
-                  <div className="progress-steps">
-                    <p className="active">
-                      <span>◉</span>
-                      Moving selected lists and cards
-                      <small>In progress</small>
-                    </p>
-                  </div>
-                </div>
+      <span className="merge-live-status">
+        <span className="live-dot" />
+        Merge in progress...
+      </span>
+    </div>
+  </div>
+
+  <div className="merge-stage-list">
+    {mergeStages.map((stage, index) => (
+      <div
+        className={`merge-stage ${stage.status}`}
+        key={stage.title}
+      >
+        <div className="stage-indicator">
+          {stage.status === "completed"
+            ? "✓"
+            : stage.status === "active"
+            ? "●"
+            : ""}
+        </div>
+
+        <div className="stage-content">
+          <strong>{stage.title}</strong>
+
+          <small>
+            {stage.status === "completed"
+              ? "Completed"
+              : stage.status === "active"
+              ? "In progress..."
+              : "Pending"}
+          </small>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <div className="merge-activity">
+    <h3>Current Activity</h3>
+
+    {activity.length === 0 ? (
+      <p className="activity-empty">
+        Preparing boards...
+      </p>
+    ) : (
+      activity.map((item, index) => (
+        <div
+          className="activity-row"
+          key={`${item.time}-${index}`}
+        >
+          <time>{item.time}</time>
+          <span>{item.message}</span>
+        </div>
+      ))
+    )}
+  </div>
+
+  <div className="merge-info-banner">
+    ⓘ You can keep this window open. Do not close it
+    until the merge is complete.
+  </div>
+</div>
+
               </>
             )}
 
