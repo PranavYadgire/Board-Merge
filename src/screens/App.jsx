@@ -203,6 +203,78 @@ export default function App() {
 
   const [sourceLists, setSourceLists] =
     useState([]);
+    
+  // Automatically load board preview counts when boards are selected
+  useEffect(() => {
+    if (
+      !api ||
+      !source ||
+      !dest ||
+      source.id === dest.id
+    ) {
+      return;
+    }
+
+    let active = true;
+
+    async function loadBoardCounts() {
+      try {
+        const [
+          sourceListsData,
+          sourceCardsData,
+          destinationListsData,
+          destinationCardsData
+        ] = await Promise.all([
+          api.lists(source.id),
+          api.cards(source.id),
+          api.lists(dest.id),
+          api.cards(dest.id)
+        ]);
+
+        if (!active) return;
+
+        setSourceLists(
+          (sourceListsData || []).filter(
+            (list) => !list.closed
+          )
+        );
+
+        setSourceCards(
+          (sourceCardsData || []).filter(
+            (card) => !card.closed
+          )
+        );
+
+        setDestLists(
+          (destinationListsData || []).filter(
+            (list) => !list.closed
+          )
+        );
+
+        setDestCards(
+          (destinationCardsData || []).filter(
+            (card) => !card.closed
+          )
+        );
+      } catch (e) {
+        if (active) {
+          setError(
+            e.message ||
+              "Unable to load board preview."
+          );
+        }
+      }
+    }
+
+    loadBoardCounts();
+
+    return () => {
+      active = false;
+    };
+  }, [api, source, dest]);
+
+    const [destCards, setDestCards] =
+  useState([]);
 
   const [destLists, setDestLists] =
     useState([]);
@@ -336,14 +408,22 @@ const context = await trello.getContext();
     [sourceLists, sourceCards]
   );
 
-  const destSummary = useMemo(
-    () => ({
-      lists: destLists.length,
-      cards: 0,
-      attachments: 0
-    }),
-    [destLists]
-  );
+ 
+const destSummary = useMemo(
+  () => ({
+    lists: destLists.length,
+
+    cards: destCards.length,
+
+    attachments: destCards.reduce(
+      (n, card) =>
+        n + (card.attachments?.length || 0),
+      0
+    )
+  }),
+  [destLists, destCards]
+);
+
 
   const selectedCards = useMemo(
     () =>
