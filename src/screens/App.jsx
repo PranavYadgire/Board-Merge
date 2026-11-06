@@ -848,20 +848,7 @@ updateMergeProgress(
           </span>
         </div>
 
-        <button
-          className="close"
-          aria-label="Close"
-          onClick={() =>
-            window.TrelloPowerUp
-              ?.iframe({
-                appKey: APP_KEY,
-                appName: "Board Merge"
-              })
-              .closeModal?.()
-          }
-        >
-          ×
-        </button>
+       
       </header>
 
       {/* SIDEBAR */}
